@@ -1,3 +1,6 @@
 [submodule "docs/test-doc"]
 	path = docs/test-doc
 	url = https://github.com/glebdovzhenko/FS-cutout-tikz-picture-test-document-
+[submodule "docs/instruments/monopoly"]
+	path = docs/instruments/monopoly
+	url = https://github.com/glebdovzhenko/MONOPOLY-DARIA
