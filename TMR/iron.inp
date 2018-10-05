@@ -1,0 +1,87 @@
+* ..+....1....+....2....+....3....+....4....+....5....+....6....+....7...
+*
+* Define a flag
+#define Flag_IRON 
+*
+TITLE
+Target-Mod
+*
+*
+DEFAULTS                                                              PRECISIO
+*
+*
+BEAM          -0.013      -0.8      -1.7                              PROTON
+BEAMPOS                             -0.1
+*
+* Geometry
+* --------
+GEOBEGIN                                                              COMBNAME
+    0    0             CylTarget
+*
+* Bodies
+* ------
+*
+* Blackhole to include geometry
+SPH BLK        0.0 0.0 0.0 10000.
+* Void sphere
+SPH VOID       0.0 0.0 0.0 1000.
+* Infinite cylinder
+ZCC TARG       0.0 0.0 5.
+*  planes cutting the cylinder
+XYP ZTlow      0.0
+XYP T1seg      1.2
+XYP T2seg      2.4
+XYP ZThigh     2.7
+*
+END
+*
+* Regions
+* -------
+*
+* Blackhole
+BLKHOLE      5 +BLK -VOID
+*
+* Target segment 1
+TARGS1       5 +TARG -ZTlow +T1seg
+* Target segment 2
+TARGS2       5 +TARG -T1seg +T2seg
+* Target segment 3
+TARGS3       5 +TARG -T2seg +ZThigh
+*
+* Air around target
+INAIR        5 | +VOID -TARG
+               | +VOID +ZTlow
+               | +VOID -ZThigh
+END
+*
+GEOEND
+*
+* Materials
+* -------------
+MATERIAL                        0.001965                              CO2
+COMPOUND                                                              AIR
+*
+* Define Cadmium
+MATERIAL         29.                8.92                              COPPER
+*
+* Assign materials
+* ----------------
+ASSIGNMA    BLCKHOLE   BLKHOLE
+ASSIGNMA    BERYLLIU    TARGS1
+ASSIGNMA       WATER    TARGS2
+ASSIGNMA         AIR     INAIR
+*
+#if Flag_IRON 
+ASSIGNMA        IRON    TARGS3
+#else  
+ASSIGNMA      COPPER    TARGS3
+#endif  
+*
+* Scoring
+* -------
+USRBDX           99.   NEUTRON      -99.    TARGS3     INAIR  78.85398BdxNeutr
+USRBDX                  1.E-10                                      1. &
+START        50000.0                                     0.0
+*
+RANDOMIZ          1.
+STOP
